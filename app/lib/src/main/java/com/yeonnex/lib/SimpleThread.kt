@@ -1,4 +1,7 @@
 package com.yeonnex.lib
+
+import java.util.concurrent.atomic.AtomicInteger
+
 // 동시성 프로그래밍
 // 동기식 synchronous
 // 비동기식 asynchronous
@@ -6,9 +9,13 @@ package com.yeonnex.lib
 
 // 쓰레드 생성 방법 : Thread 클래스를 상속받거나 Runnable 인터페이스를 구현
 class SimpleThread(private val threadName: String): Thread() {
+    companion object {
+        var count = AtomicInteger(0)
+    }
     override fun run(){
         for (i in 0..99){
-            println("안녕하세요 $threadName 입니다")
+            count.incrementAndGet()
+            println("안녕하세요 $threadName 입니다 ${count.get()}")
             Thread.sleep(10)
         }
     }
