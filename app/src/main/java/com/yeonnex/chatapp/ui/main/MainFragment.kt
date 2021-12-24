@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yeonnex.chatapp.AsyncDownThread
 import com.yeonnex.chatapp.ChatItem
 import com.yeonnex.chatapp.ChatRecyclerAdapter
+import com.yeonnex.chatapp.NicknameFragment
 import com.yeonnex.chatapp.databinding.MainFragmentBinding
 import org.json.JSONArray
 import org.json.JSONException
@@ -46,24 +47,17 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        val linearLayoutManager = LinearLayoutManager(context,
-            LinearLayoutManager.VERTICAL, false) // reverse 레이아웃
-        linearLayoutManager.stackFromEnd = true
+        binding.btnOK.setOnClickListener{
+            var action: NicknameFragmentDirections.NicknameToMain = NicknameFragmentDirections.nicknameToMain()
 
-        layoutManager = LinearLayoutManager(context)
-        adapter = ChatRecyclerAdapter(context, items)
-        binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = adapter
+            val nickname = binding.etNickname.text.toString()
+            context?.let{
+                val sharedPreferences = context?.getSharedPreferences("chat", 0)
+                val editor = sharedPreferences.edit()
+                editor.putString("nickname", nickname)
+                editor.apply()
+            }
 
-
-        binding.btnSend.setOnClickListener {
-            val chat = binding.etMsg.text.toString()
-            val url = "http://wik.iptime.org:8080/cmsgs/$nickname/$chat"
-            AsyncDownThread(url, null).start()
-
-            binding.etMsg.setText("")
-            mHandler.removeMessages(0) // 초기화
-            mHandler.sendEmptyMessage(0)
         }
     }
 
@@ -103,11 +97,12 @@ class MainFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        arguments?.let{
-            val args = MainFragmentArgs.fromBundle(it)
-            this.nickname = args.nickname
+        context?.let {
+            val nickname = it.getSharedPreferences("chat", 0)
+                             .getString("nickname", "")
+            binding.etNickname.setText(nickname)
+
         }
-        mHandler.sendEmptyMessage(0)
     }
 
     override fun onStop() {
