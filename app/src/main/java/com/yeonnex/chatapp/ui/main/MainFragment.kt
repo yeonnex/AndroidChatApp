@@ -31,8 +31,9 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        val url = "http://wik.iptime.org:8080/cmsgs/list/0.json"
         binding.btnSend.setOnClickListener {
-            val thread = AsyncDownThread("http://hello", getChatMsgHandler)
+            val thread = AsyncDownThread(url, getChatMsgHandler)
             thread.start()
             binding.message.text = "hello"
         }
