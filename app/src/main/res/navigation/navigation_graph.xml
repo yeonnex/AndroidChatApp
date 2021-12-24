@@ -9,7 +9,11 @@
         android:id="@+id/nicknameFragment"
         android:name="com.yeonnex.chatapp.NicknameFragment"
         android:label="fragment_nickname"
-        tools:layout="@layout/fragment_nickname" />
+        tools:layout="@layout/fragment_nickname" >
+        <action
+            android:id="@+id/action_nicknameFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.yeonnex.chatapp.ui.main.MainFragment"

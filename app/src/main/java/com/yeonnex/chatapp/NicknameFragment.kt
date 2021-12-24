@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import com.yeonnex.chatapp.databinding.FragmentNicknameBinding
+import com.yeonnex.chatapp.ui.main.MainViewModel
 
 
 class NicknameFragment : Fragment() {
@@ -18,6 +21,16 @@ class NicknameFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_nickname, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
+        binding.btnOK.setOnClickListener {
+            Navigation.findNavController(it).navigate(R.id.nickname)
+        }
+
     }
 
     companion object {

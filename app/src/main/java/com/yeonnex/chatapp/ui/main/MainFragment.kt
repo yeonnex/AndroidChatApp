@@ -103,6 +103,10 @@ class MainFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        arguments?.let{
+            val args = MainFragmentArgs.fromBundle(it)
+            this.nickname = args.nickname
+        }
         mHandler.sendEmptyMessage(0)
     }
 
