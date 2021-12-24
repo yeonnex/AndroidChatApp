@@ -46,6 +46,10 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
+        val linearLayoutManager = LinearLayoutManager(context,
+            LinearLayoutManager.VERTICAL, false) // reverse 레이아웃
+        linearLayoutManager.stackFromEnd = true
+
         layoutManager = LinearLayoutManager(context)
         adapter = ChatRecyclerAdapter(context, items)
         binding.recyclerView.layoutManager = layoutManager
@@ -53,7 +57,13 @@ class MainFragment : Fragment() {
 
 
         binding.btnSend.setOnClickListener {
+            val chat = binding.etMsg.text.toString()
+            val url = "http://wik.iptime.org:8080/cmsgs/$nickname/$chat"
+            AsyncDownThread(url, null).start()
 
+            binding.etMsg.setText("")
+            mHandler.removeMessages(0) // 초기화
+            mHandler.sendEmptyMessage(0)
         }
     }
 
@@ -72,7 +82,11 @@ class MainFragment : Fragment() {
                         items.add(ChatItem("$nickname:\n$usermsg"))
                 }
             }
-            adapter?.notifyDataSetChanged()
+            adapter?.let{ adp ->
+                adp.notifyDataSetChanged()
+                binding.recyclerView.scrollToPosition(adp.itemCount - 1)
+            }
+
         } catch (e: JSONException) { e.printStackTrace() }
 
         true
